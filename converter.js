@@ -3,7 +3,7 @@ const Decimal = require('decimal.js');
 var shift_forward = -1;
 var binary = [];
 
-var decimal_val = '893490.9839'
+var decimal_val = '15000000000'
 var actual_val = ''
 var binary_val = '';
 var error_val = '';
@@ -29,6 +29,9 @@ function updateFromNewDecimalString() {
     var number_bits_total = number_binary.length;
 
     var decimal_binary = getDecimalBinary(x, 113 - number_bits_total);
+    if (number_binary.length == 0){
+        decimal_binary = popUntilFirstOne(decimal_binary);
+    }
     if (decimal_binary.length > 112 - number_bits_total){
         if (decimal_binary[113 - number_bits_total] == 1){
             decimal_binary = roundUpBinary(decimal_binary)
@@ -72,6 +75,7 @@ function updateFromNewDecimalString() {
 function updateFromNewBinaryString(){
     // Use when binary_val has changed.
     // All other values will change accordingly.
+    Decimal.set({ precision: 150 });
 
     var binary_string = binary_val;
     sign_bit = binary_string.slice(0, 1).split('');
@@ -87,6 +91,7 @@ function updateFromNewBinaryString(){
 function updateFromNewBinaryToggle(){
     // Use when a binary bit is changed.
     // All other calues will change accordingly.
+    Decimal.set({ precision: 150 });
 
     binary_val = sign_bit.join('') + exponent_bits.join('') + mantissa_bits.join('');
     getDecimalFromBinary();
@@ -111,7 +116,7 @@ function getDecimalFromBinary() {
         var fractional_string = mantissa.slice(exponent);
         var number_string_val = binaryToNumber(number_string).toPrecision();
         var fractional_string_val = binaryToFractional(fractional_string).toDP(30).toFixed();
-        actual_val = number_string_val + fractional_string_val;
+        actual_val = number_string_val + fractional_string_val.slice(1);
     }
     else {
         var number_string = '1' + addZerosToEnd(mantissa, exponent - mantissa_bits.length);
@@ -119,8 +124,8 @@ function getDecimalFromBinary() {
         actual_val = number_string_val;
     }
 
-    if (sign_bit[0] = 1){
-        actual_val = '-' + number_string_val
+    if (sign_bit[0] == 1){
+        actual_val = '-' + actual_val
     }
 }
 
@@ -130,7 +135,7 @@ function getError(){
     var decimal = new Decimal(decimal_val);
     var actual = new Decimal(actual_val);
 
-    error_val = decimal.sub(actual).toFixed();
+    error_val = actual.sub(decimal).toFixed();
 }
 
 function binaryToFractional(string) {
@@ -219,6 +224,13 @@ function addSpaces(str) {
     return str.replace(/(.{4})/g, '$1 ');
 }
 
+function popUntilFirstOne(arr){
+    while(arr[0] == 0){
+        arr = arr.slice(1);
+    }
+    return arr;
+}
+
 function getNumberBinary(number){
     // Gets the binary bits of a number
     var number_portion = number.round();
@@ -242,7 +254,7 @@ function getDecimalBinary(number, limit){
         no_number = true;
     }
 
-    while(binary_bits.length <= limit && !decimal_portion.equals(0)){
+    while(current_bit_total <= limit && !decimal_portion.equals(0)){
         decimal_portion = decimal_portion.mul(2);
         if (decimal_portion.greaterThanOrEqualTo(1)){
             decimal_portion = decimal_portion.minus(1);
