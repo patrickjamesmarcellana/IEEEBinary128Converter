@@ -2,7 +2,7 @@ const Decimal = require('decimal.js');
 
 var shift_forward = -1;
 var binary = [];
-
+;
 var decimal_val = '15000000000'
 var actual_val = ''
 var binary_val = '';
