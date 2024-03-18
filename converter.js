@@ -418,6 +418,9 @@ function loadBinaryString(binary_string, exponent) {
     }
   }
 
+  // determine sign
+  sign_bit[0] = sign ? 1 : 0
+
   // determine exponent
   exponent = parseInt(exponent);
   if (dot_idx != null) {
