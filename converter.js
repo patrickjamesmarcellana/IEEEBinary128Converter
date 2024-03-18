@@ -2,7 +2,7 @@ const Decimal = require("decimal.js");
 
 var shift_forward = -1;
 var binary = [];
-var decimal_val = "505.5";
+var decimal_val = "1";
 var actual_val = "";
 var binary_val = "";
 var error_val = "";
@@ -74,6 +74,11 @@ function updateFromNewDecimalString() {
 
     binary_val =
         sign_bit.join("") + exponent_bits.join("") + mantissa_bits.join("");
+    console.assert(
+        binary_val.length === 128,
+        "binary value length: expected 128, got",
+        binary_val.length
+    );
     console.log(binary_val);
 
     var hex_string = convertBinaryStringToHex();
