@@ -337,14 +337,9 @@ function loadBinaryString(binary_string, exponent) {
     let sign = false;
     let dot_idx = null;
     let first_one_idx = null;
-    const fractional = []
+    const mantissa = []
     for(let i = 0; i < binary_string.length; i++) {
         const char = binary_string[i];
-
-        // push to fractional if implicit 1 already found
-        if(first_one_idx != null && (char == '0' || char == '1')) {
-            fractional.push(char);
-        }
 
         // parse input
         switch(char) {
@@ -369,6 +364,11 @@ function loadBinaryString(binary_string, exponent) {
                     // error
                 }
         }
+
+        // push to mantissa if implicit 1 already found
+        if(first_one_idx != null && (char == '0' || char == '1')) {
+            mantissa.push(char);
+        }
     }
 
     // determine exponent
@@ -382,10 +382,12 @@ function loadBinaryString(binary_string, exponent) {
             exponent += dot_idx - first_one_idx;
         }
     } else { // no dot
-        exponent += fractional.length;
+        exponent += mantissa.length - 1;
     }
 
-    console.log(binary_string, sign, fractional, exponent)
+    const num = mantissa_exponent_pair(mantissa, exponent);
+    num.print();
+    num.pack();
 }
 updateFromNewDecimalString();
 
