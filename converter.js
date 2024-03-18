@@ -35,6 +35,15 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
     },
     pack: function () {
       rtn_te(this, 113);
+      if(this.mantissa.length == 0) {
+        binary_val = sign_bit.join("") + Array(127).fill(0).join("")
+        hex_val = convertBinaryStringToHex().join("");
+
+        return {
+            bin: binary_val,
+            hex: hex_val
+        }
+      }
 
       var exponent_binary = getNumberBinary(new Decimal(16383 + this.exponent));
       exponent_bits = Array(15 - exponent_binary.length)
