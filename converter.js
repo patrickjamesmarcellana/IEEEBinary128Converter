@@ -272,4 +272,60 @@ function getDecimalBinary(number, limit){
     return binary_bits;
 }
 
+function loadBinaryString(binary_string, exponent) {
+    let sign = false;
+    let dot_idx = null;
+    let first_one_idx = null;
+    const fractional = []
+    for(let i = 0; i < binary_string.length; i++) {
+        const char = binary_string[i];
+
+        // push to fractional if implicit 1 already found
+        if(first_one_idx != null && (char == '0' || char == '1')) {
+            fractional.push(char);
+        }
+
+        // parse input
+        switch(char) {
+            case '0':
+                break;
+            case '1':
+                // check if this is implicit 1
+                if(first_one_idx == null) {
+                    first_one_idx = i;
+                }
+                break
+            case '.':
+                if(dot_idx == null) {
+                    dot_idx = i;
+                } else {
+                    // error
+                }
+            case '-':
+                if(i == 0) {
+                    sign = true;
+                } else {
+                    // error
+                }
+        }
+    }
+
+    // determine exponent
+    exponent = parseInt(exponent)
+    if(dot_idx != null) { //
+        if(first_one_idx < dot_idx) { // has dot
+            // move towards 1, but not so they would end up switching positions
+            exponent += dot_idx - first_one_idx - 1;
+        } else { // 000.xx1xxxx
+            // move towards 1, and make them switch positions
+            exponent += dot_idx - first_one_idx;
+        }
+    } else { // no dot
+        exponent += fractional.length;
+    }
+
+    console.log(binary_string, sign, fractional, exponent)
+}
 updateFromNewDecimalString();
+
+window.loadBinaryString = loadBinaryString;
