@@ -1,4 +1,6 @@
 const Decimal = require("decimal.js");
+Decimal.set({ precision: 150 });
+Decimal.rounding = Decimal.ROUND_DOWN;
 
 var shift_forward = -1;
 var binary = [];
@@ -44,7 +46,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
             hex: hex_val
         }
       }
-
+      
       var exponent_binary = getNumberBinary(new Decimal(16383 + this.exponent));
       exponent_bits = Array(15 - exponent_binary.length)
         .fill(0)
@@ -81,13 +83,11 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
     },
   };
 }
-function updateFromNewDecimalString() {
+function updateFromNewDecimalString(decimal_string, exponent) {
   // Use when decimal input has been changed.
   // All other values will change accordingly.
-
-  Decimal.set({ precision: 150 });
+  decimal_val = decimal_string + "e" + exponent;
   var x = new Decimal(decimal_val);
-  Decimal.rounding = Decimal.ROUND_DOWN;
   if (x.greaterThanOrEqualTo(0)) {
     sign_bit = [0];
   } else {
@@ -127,9 +127,7 @@ function updateFromNewDecimalString() {
     // round to zero/truncate, which is the same as doing nothing
   }
   number.print();
-  console.log(number.pack());
-
-  return;
+  return number.pack();
 
   getDecimalFromBinary();
   getError();
@@ -443,6 +441,6 @@ function loadBinaryString(binary_string, exponent) {
   num.print();
   return num.pack();
 }
-updateFromNewDecimalString();
 
 window.loadBinaryString = loadBinaryString;
+window.loadDecimalString = updateFromNewDecimalString;

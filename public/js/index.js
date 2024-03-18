@@ -45,10 +45,17 @@ $("#submit-btn").click((e) => {
     NUMBER = $("#number-value").val()
     EXPONENT = $("#exponent-value").val()
 
-    const {bin, hex} = window.loadBinaryString(NUMBER, EXPONENT)
-    console.log(bin, hex)
-    $("#output-bin").text(bin)
-    $("#output-hex").text   (hex)
+    let result;
+    switch(MODE) {
+        case 2:
+            result = window.loadBinaryString(NUMBER, EXPONENT)
+            break
+        case 10:
+            result = window.loadDecimalString(NUMBER, EXPONENT)
+            break
+    }
+    $("#output-bin").text(result.bin)
+    $("#output-hex").text(result.hex)
 })
 
 

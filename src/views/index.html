@@ -48,7 +48,7 @@
                         <button class="flex justify-center items-center mr-[25px] text-white text-[15px] bg-[#002338] w-[245px] h-[38px] rounded-[3px]" id="binary-input">
                             <div>Binary Mantissa and Base-2</div>
                         </button>
-                        <button class="opacity-25 cursor-pointer flex justify-center items-center text-white text-[15px] bg-[#002338] w-[245px] h-[38px] rounded-[3px]">
+                        <button class="opacity-25 cursor-pointer flex justify-center items-center text-white text-[15px] bg-[#002338] w-[245px] h-[38px] rounded-[3px]" id="decimal-input">
                             <div>Decimal and Base-10</div>
                         </button>
                     </div>
@@ -56,13 +56,13 @@
                         Enter Numbers
                     </div>
                     <div class="flex flex-col mb-[25px]">
-                        <div class="text-[18px] mb-[10px]">
+                        <div class="text-[18px] mb-[10px] binary-input-text" id="number-input-label">
                             Binary Mantissa
                         </div>
                         <!-- Needs to be text instead of a number so it wont get converted into a float due to a Firefox bug (testcase: -.0000000000000000000000001) -->
                         <input type="text" name="number-value" id="number-value" class="font-['Lato'] flex items-center border-2 mb-[10px] border-[#002338] p-3 text-[#002338] text-[1.15vw] w-[245px] h-[38px] rounded-[3px]">                            
                         </input>
-                        <div class="text-[18px] mb-[10px]">
+                        <div class="text-[18px] mb-[10px] binary-input-text" id="exponent-input-label">
                             Base-2 Exponent
                         </div>
                         <input type="text" name="exponent-value" id="exponent-value" class="font-['Lato'] flex items-center p-3 border-2 border-[#002338] text-[#002338] text-[1.15vw] w-[245px] h-[38px] rounded-[3px]">
