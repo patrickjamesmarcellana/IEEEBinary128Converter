@@ -36,8 +36,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
     pack: function () {
       rtn_te(this, 113);
 
-      var exponent_binary = new Decimal(16383 + this.exponent);
-      exponent_binary = getNumberBinary(exponent_binary);
+      var exponent_binary = getNumberBinary(new Decimal(16383 + this.exponent));
       exponent_bits = Array(15 - exponent_binary.length)
         .fill(0)
         .concat(exponent_binary);
@@ -48,9 +47,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       );
       console.log(exponent_bits.join(""));
 
-      var mantissa = [];
-      mantissa = this.mantissa.slice(1);
-      mantissa_bits = addZerosToArray(mantissa, 112);
+      mantissa_bits = addZerosToArray(this.mantissa.slice(1), 112);
       console.assert(
         mantissa_bits.length === 112,
         "mantissa bits length: expected 112, got",
@@ -309,14 +306,6 @@ function convertBinaryStringToHex() {
   });
 
   return hex_string;
-}
-
-function addLeadingZerosToArray(arr, desiredLength) {
-  // Adds zeros at the start of array to match length.
-  while (arr.length < desiredLength) {
-    arr.splice(0, 0, 0);
-  }
-  return arr;
 }
 
 function addZerosToArray(arr, desiredLength) {
