@@ -15,6 +15,10 @@ var mantissa_bits = [];
 
 // A data type storing the mantissa 1.xxxxx and its exponent
 function mantissa_exponent_pair(_mantissa, _exponent) {
+  if(isNaN(_exponent)) {
+    throw "Invalid exponent";
+  }
+
   return {
     mantissa: _mantissa,
     exponent: _exponent,
