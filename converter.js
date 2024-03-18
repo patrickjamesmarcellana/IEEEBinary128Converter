@@ -12,6 +12,36 @@ var sign_bit = [];
 var exponent_bits = [];
 var mantissa_bits = [];
 
+// TODO: rtn_te is inplace
+
+// A data type storing the mantissa 1.xxxxx and its exponent
+function mantissa_exponent_pair(_mantissa, _exponent) {
+    return {
+        mantissa: _mantissa,
+        exponent: _exponent,
+        print: function() {
+            console.log(this.mantissa, 'x 2^', this.exponent);
+        },
+        pack: function() {
+            rtn_te(this, 113);
+
+            var exponent_binary = exponent_binary = getNumberBinary(new Decimal(16383 + this.exponent));
+            exponent_bits = exponent_binary;
+            console.log(exponent_bits.join(''));
+        
+            var mantissa = this.mantissa.slice(1);
+            mantissa_bits = addZerosToArray(mantissa, 112);
+            console.log(addSpaces(mantissa_bits.join('')));
+        
+            binary_val = sign_bit.join('') + exponent_bits.join('') + mantissa_bits.join('')
+            console.log(binary_val);
+        
+            var hex_string = convertBinaryStringToHex();
+            hex_val = hex_string.join('');
+            console.log(hex_val);
+        }
+    };
+}
 function updateFromNewDecimalString() {
     // Use when decimal input has been changed.
     // All other values will change accordingly.
@@ -26,47 +56,33 @@ function updateFromNewDecimalString() {
         x = x.negated();
     }
     var number_binary = getNumberBinary(x);
-    var number_bits_total = number_binary.length;
+    var number_bits_currently_used = number_binary.length;
 
-    var decimal_binary = getDecimalBinary(x, 113 - number_bits_total);
-    if (number_binary.length == 0){
-        decimal_binary = popUntilFirstOne(decimal_binary);
-    }
-    if (decimal_binary.length > 112 - number_bits_total){
-        if (decimal_binary[113 - number_bits_total] == 1){
-            decimal_binary = roundUpBinary(decimal_binary)
-            decimal_binary.pop();
-        } else {
-            decimal_binary.pop();
-        };
-    }
-    console.log(number_binary.join(''));
-    console.log(decimal_binary.join(''));
+    var [decimal_binary, exponent, remaining] = getDecimalBinary(x, 113 - number_bits_currently_used, x.lessThan(1) /* if 0.xxx, then remove leading zeros in decimal part */);
 
-    var exponent = 0;
-    if (number_bits_total > 0) {
-        exponent = number_bits_total - 1;
+    var ZERO_POINT_FIVE = new Decimal("0.5");
+    console.log(number_binary, 'enc')
+    var number = mantissa_exponent_pair(number_binary.concat(decimal_binary), number_bits_currently_used > 0 ? number_bits_currently_used - 1 /* 1xx.xxxxx -> base on number_bits_currently_used */ : exponent /* 0.xxxxx -> base on getDecimalBinary */)
+    console.log(number)
+
+
+    // having a non-zero remaining implies that it has 113 + 1 (round) binary digits
+    if(remaining.equals(ZERO_POINT_FIVE)) {
+        // make the excess part "1" as it actually should be
+        number.mantissa.push(1);
+    } else if(remaining.greaterThan(ZERO_POINT_FIVE)) {
+        // case where remaining is greater than even
+        // make the excess part "xxx11" so it will always round up
+        number.mantissa.push(1);
+        number.mantissa.push(1);
     } else {
-        exponent = shift_forward;
+        // round to zero/truncate, which is the same as doing nothing
     }
-
-    var exponent_binary = new Decimal(16383 + exponent);
-    exponent_binary = getNumberBinary(exponent_binary);
-    exponent_bits = exponent_binary;
-    console.log(exponent_bits.join(''));
-
-    var mantissa = []
-    mantissa = number_binary.slice(1);
-    mantissa = mantissa.concat(decimal_binary);
-    mantissa_bits = addZerosToArray(mantissa, 112);
-    console.log(addSpaces(mantissa_bits.join('')));
-
-    binary_val = sign_bit.join('') + exponent_bits.join('') + mantissa_bits.join('')
-    console.log(binary_val);
-
-    var hex_string = convertBinaryStringToHex();
-    hex_val = hex_string.join('');
-    console.log(hex_val);
+    number.print()
+    console.log(number.pack())
+    
+    
+    return;
 
     getDecimalFromBinary();
     getError();
@@ -175,15 +191,63 @@ function binaryToNumber(string) {
     return decimal;
 }
 
-function roundUpBinary(arr) {
+function rtn_te(mantissa_exponent_pair, desired_length) {
+    const mantissa = mantissa_exponent_pair.mantissa;
     // Rounds binary
-    var i = arr.length - 1;
-    while (arr[i] != 0){
-        arr[i] = 0;
-        i--
+    function round_up() {
+        var i = mantissa.length - 1;
+        while (i >= 0 && mantissa[i] != 0){
+            mantissa[i] = 0;
+            i--
+        }
+    
+        if(i >= 0) {
+            mantissa[i] = 1;
+        } else {
+            // add new 1
+            mantissa.splice(0, 0, 1);
+
+            // renormalize
+            mantissa_exponent_pair.exponent++;
+        }
     }
-    arr[i] = 1;
-    return arr;
+
+    i = 0
+    while(i++ < 5) {
+        console.log(mantissa);
+
+        // remove trailing zeros
+        while(mantissa.length > 0 && mantissa[-1] == 0) {
+            mantissa.pop();
+        }
+
+        if(mantissa.length <= desired_length) {
+            // done
+            console.log("RTN-TE truncate");
+            break;
+        } else if(mantissa.length == desired_length + 1) {
+            console.log("RTN-TE tie");
+            // tie, round to even
+            mantissa.pop();
+            if(mantissa[-1] == 1) { // if odd, round up
+                round_up();
+            }
+        } else {
+            // round up digits
+            console.log("RTN-TE increase magnitude");
+            while(mantissa.length > desired_length) {
+                mantissa.pop();
+            }
+
+            round_up();
+        }
+    }
+
+    if(i == 5) {
+        console.error("Encountered too many rounding iterations. Check the parameters.")
+    }
+
+    return mantissa_exponent_pair;
 }
 
 function convertBinaryStringToHex(){
@@ -224,13 +288,6 @@ function addSpaces(str) {
     return str.replace(/(.{4})/g, '$1 ');
 }
 
-function popUntilFirstOne(arr){
-    while(arr[0] == 0){
-        arr = arr.slice(1);
-    }
-    return arr;
-}
-
 function getNumberBinary(number){
     // Gets the binary bits of a number
     var number_portion = number.round();
@@ -243,33 +300,29 @@ function getNumberBinary(number){
     return binary_bits.reverse();
 }
 
-function getDecimalBinary(number, limit){
+function getDecimalBinary(number, limit, skip_leading=false){
     // Gets the binary bits of a fractional number
     var decimal_portion = number.minus(number.round());
     var binary_bits = [];
-    var current_bit_total = 0;
-    var no_number = false;
     var zero_trigger = true;
-    if (limit == 121){
-        no_number = true;
-    }
+    var exponent = 0;
 
-    while(current_bit_total <= limit && !decimal_portion.equals(0)){
+    while(binary_bits.length <= limit && !decimal_portion.equals(0)){
         decimal_portion = decimal_portion.mul(2);
         if (decimal_portion.greaterThanOrEqualTo(1)){
             decimal_portion = decimal_portion.minus(1);
             binary_bits.push(1);
             zero_trigger = false;
         } else {
-            binary_bits.push(0);
-        }
-        current_bit_total = current_bit_total + 1;
-        if (zero_trigger){
-            current_bit_total = current_bit_total - 1;
-            shift_forward = shift_forward - 1;
+            // 0 case
+            if(!skip_leading || !zero_trigger /* if skip leading enabled */) {
+                binary_bits.push(0);
+            } else {
+                exponent--; // decrease exponent to compensate for place value increase
+            }
         }
     }
-    return binary_bits;
+    return [binary_bits, exponent, decimal_portion];
 }
 
 function loadBinaryString(binary_string, exponent) {
