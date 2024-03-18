@@ -13,6 +13,14 @@ var mantissa_bits = [];
 
 // TODO: rtn_te is inplace
 
+// A data type storing bin and hex answers
+function answer(bin, hex) {
+    return {
+        bin: bin,
+        hex: hex
+    }
+}
+
 // A data type storing the mantissa 1.xxxxx and its exponent
 function mantissa_exponent_pair(_mantissa, _exponent) {
   if(isNaN(_exponent)) {
@@ -62,6 +70,8 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       var hex_string = convertBinaryStringToHex();
       hex_val = hex_string.join("");
       console.log(hex_val);
+
+      return answer(binary_val, hex_val)
     },
   };
 }
@@ -430,7 +440,7 @@ function loadBinaryString(binary_string, exponent) {
 
   const num = mantissa_exponent_pair(mantissa, exponent);
   num.print();
-  num.pack();
+  return num.pack();
 }
 updateFromNewDecimalString();
 
