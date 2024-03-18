@@ -44,8 +44,6 @@ $("#submit-btn").click((e) => {
 
     NUMBER = $("#number-value").val()
     EXPONENT = $("#exponent-value").val()
-
-    window.loadBinaryString(NUMBER, EXPONENT);
 })
 
 
