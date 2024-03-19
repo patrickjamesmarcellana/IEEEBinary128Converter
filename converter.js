@@ -42,6 +42,17 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       }
     },
     pack: function () {
+      // convert to denormalized if needed
+      // NOTE: RTN-TE might cause it to no longer need denormalization
+      //   possible scenario 0.1111...111 x 2^-16382 -> round up to 1.000...000 x 2^-16382
+      //   so we determine denormalization later on by `this.mantissa[0] == 0` rather than the exponent
+      if(this.exponent < -16382) {
+        var zeroes_to_add_to_start = -16382 - this.exponent;
+        this.mantissa = Array(zeroes_to_add_to_start)
+          .fill(0)
+          .concat(this.mantissa);
+        this.exponent = -16382;
+      }
       rtn_te(this, 113);
       if(this.mantissa.length == 0) {
         binary_val = sign_bit.join("") + Array(127).fill(0).join("")
@@ -52,8 +63,19 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
             hex: hex_val
         }
       }
+
+      var e_prime;
+      if(this.mantissa[0]) {
+        // normal case
+        e_prime = 16383 + this.exponent;
+        console.assert(1 <= e_prime && e_prime <= 32767,
+          "exponent does not fit in range");
+      } else {
+        // denormalized
+        e_prime = 0;
+      }
       
-      var exponent_binary = getNumberBinary(new Decimal(16383 + this.exponent));
+      var exponent_binary = getNumberBinary(new Decimal(e_prime));
       exponent_bits = Array(15 - exponent_binary.length)
         .fill(0)
         .concat(exponent_binary);
@@ -275,9 +297,7 @@ function rtn_te(mantissa_exponent_pair, desired_length) {
     console.log(mantissa);
 
     // remove trailing zeros
-    while (mantissa.length > 0 && mantissa[-1] == 0) {
-      mantissa.pop();
-    }
+    removeTrailingZeroesFromArray(mantissa)
 
     if (mantissa.length <= desired_length) {
       // done
@@ -329,6 +349,13 @@ function addZerosToArray(arr, desiredLength) {
     arr.push(0);
   }
   return arr;
+}
+
+function removeTrailingZeroesFromArray(arr) {
+  while (arr.length > 0 && arr[-1] == 0) {
+    arr.pop();
+  }
+  return arr
 }
 
 function addZerosAndOneToBeginning(str, num) {
