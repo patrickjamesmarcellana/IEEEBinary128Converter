@@ -10,6 +10,7 @@ const Binary16 = {
   MIN_NORMALIZED_EXPONENT: -14,
   E_PRIME_OFFSET: 15,
   INFINITY_E_PRIME: 31,
+  NAN_SENTINEL: Infinity,
 };
 
 const Binary128 = {
@@ -20,6 +21,7 @@ const Binary128 = {
   MIN_NORMALIZED_EXPONENT: -16382,
   E_PRIME_OFFSET: 16383,
   INFINITY_E_PRIME: 32767,
+  NAN_SENTINEL: Infinity,
 };
 
 var number_format = Binary128;
@@ -75,7 +77,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
           .fill(0)
           .concat(this.mantissa);
         this.exponent = number_format.MIN_NORMALIZED_EXPONENT;
-      } else if (this.exponent == number_format.INFINITY_E_PRIME){
+      } else if (this.exponent == number_format.NAN_SENTINEL){
         binary_val = sign_bit.join("") + '1111111111111111' + Array(111).fill(0).join("");
         hex_val = convertBinaryStringToHex().join("");
 
@@ -153,7 +155,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
   // All other values will change accordingly.
   if (!numericRegex.test(decimal_string) || !numericRegex.test(exponent)){
     sign_bit = [0];
-    var nan = mantissa_exponent_pair(['1'], number_format.INFINITY_E_PRIME);
+    var nan = mantissa_exponent_pair(['1'], number_format.NAN_SENTINEL);
     console.log(decimal_string);
     console.log(exponent);
     nan.print();
@@ -546,7 +548,7 @@ function loadBinaryString(binary_string, exponent) {
   }
 
   if (error == true){
-    exponent = number_format.INFINITY_E_PRIME;
+    exponent = number_format.NAN_SENTINEL;
   }
 
   const num = mantissa_exponent_pair(mantissa, exponent);
