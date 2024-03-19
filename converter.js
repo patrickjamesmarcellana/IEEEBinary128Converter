@@ -362,12 +362,18 @@ function rtn_te(mantissa_exponent_pair, desired_length) {
       }
     } else {
       // round up digits
-      console.log("RTN-TE increase magnitude");
-      while (mantissa.length > desired_length) {
-        mantissa.pop();
+      if(mantissa[desired_length] == 1) {
+        console.log("RTN-TE increase magnitude");
+        while (mantissa.length > desired_length) {
+          mantissa.pop();
+        }
+        round_up();
+      } else {
+        console.log("RTN-TE truncate");
+        while (mantissa.length > desired_length) {
+          mantissa.pop();
+        }
       }
-
-      round_up();
     }
   }
 
@@ -465,7 +471,7 @@ function getDecimalBinary(number, limit, skip_leading = false) {
 function loadBinaryString(binary_string, exponent) {
   binary_string = binary_string.trim();
   exponent = exponent.trim();
-  
+
   let sign = false;
   let dot_idx = null;
   let first_one_idx = null;
