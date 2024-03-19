@@ -366,7 +366,7 @@ function getDecimalBinary(number, limit, skip_leading = false) {
   var zero_trigger = true;
   var exponent = 0;
 
-  while (binary_bits.length <= limit && !decimal_portion.equals(0)) {
+  while (binary_bits.length < limit && !decimal_portion.equals(0)) {
     decimal_portion = decimal_portion.mul(2);
     if (decimal_portion.greaterThanOrEqualTo(1)) {
       decimal_portion = decimal_portion.minus(1);
