@@ -160,8 +160,10 @@ function updateFromNewDecimalString(decimal_string, exponent) {
     nan.print();
     return nan.pack();
   }
+
+  // decimal_val is guaranteed to be not empty due to the regex
   var x = new Decimal(decimal_val);
-  if (x.greaterThanOrEqualTo(0)) {
+  if (decimal_val[0] !== '-') { 
     sign_bit = [0];
   } else {
     sign_bit = [1];
