@@ -1,3 +1,4 @@
+import { loadDecimalString, loadBinaryString } from "../../converter.js";
 // records values so they are not lost when switching base/radix
 let binaryNumberString = "";
 let binaryExponentString = "";
@@ -12,9 +13,9 @@ $("#submit-btn").click((e) => {
 
     let result;
     if ($("#binary-input").hasClass("active")) {
-        result = window.loadBinaryString(numberValue, exponentValue);
+        result = loadBinaryString(numberValue, exponentValue);
     } else {
-        result = window.loadDecimalString(numberValue, exponentValue);
+        result = loadDecimalString(numberValue, exponentValue);
     }
 
     const first16Bits = result.bin.substring(0, 16);

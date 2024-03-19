@@ -1,4 +1,4 @@
-const Decimal = require("decimal.js");
+import Decimal from "decimal.js";
 Decimal.set({ precision: 150 });
 Decimal.rounding = Decimal.ROUND_DOWN;
 
@@ -337,7 +337,7 @@ function rtn_te(mantissa_exponent_pair, desired_length) {
     }
   }
 
-  i = 0;
+  let i = 0;
   while (i++ < 5) {
     console.log(mantissa);
 
@@ -543,5 +543,11 @@ function loadBinaryString(binary_string, exponent) {
 
 loadBinaryString('B', 'B')
 
-window.loadBinaryString = loadBinaryString;
-window.loadDecimalString = updateFromNewDecimalString;
+const toBinary16 = function() {
+  number_format = Binary16;
+}
+export {
+  loadBinaryString, 
+  updateFromNewDecimalString as loadDecimalString,
+  toBinary16
+}

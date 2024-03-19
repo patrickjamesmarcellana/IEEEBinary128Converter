@@ -1,4 +1,5 @@
 import browserify from "browserify"
+import esmify from "esmify"
 import express from "express"
 import fs from "fs"
 import { router } from "./src/routes/routes.js"
@@ -22,8 +23,8 @@ app.listen(process.env.PORT, () => {
     console.log(`IEEE-754 Binary-128 Floating Point Converter App now listening to port ${process.env.PORT}...`)
 })
 
-const b = browserify(['converter.js'], {
-    plugin: [watchify]
+const b = browserify(['public/js/index.js', 'converter.js'], {
+    plugin: [watchify, esmify]
 })
 const bunlde = () => {
     b.bundle()
