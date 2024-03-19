@@ -5,8 +5,10 @@ let decimalNumberString = "";
 let decimalExponentString = "";
 
 $("#submit-btn").click((e) => {
-    let numberValue = $("#number-value").val();
-    let exponentValue = $("#exponent-value").val();
+    $(".result-value").removeClass("invisible");
+
+    const numberValue = $("#number-value").val();
+    const exponentValue = $("#exponent-value").val();
 
     let result;
     if ($("#binary-input").hasClass("active")) {
@@ -14,8 +16,18 @@ $("#submit-btn").click((e) => {
     } else {
         result = window.loadDecimalString(numberValue, exponentValue);
     }
-    $("#output-bin").text(result.bin);
-    $("#output-hex").text(result.hex);
+
+    const first16Bits = result.bin.substring(0, 16);
+    const first16BitsGrouped = first16Bits.match(/.{1,4}/g).join(" ");
+    const significandBitsGrouped = result.bin
+        .substring(16)
+        .match(/.{1,4}/g)
+        .join(" ");
+
+    $("#sign-bit").text(first16BitsGrouped[0]);
+    $("#exponent-bits").text(first16BitsGrouped.substring(1));
+    $("#significand-bits").text(significandBitsGrouped);
+    $("#output-hex").text("0x" + result.hex);
 });
 
 $("#decimal-input").click((e) => {
