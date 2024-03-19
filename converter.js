@@ -68,6 +68,12 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       if(this.mantissa[0]) {
         // normal case
         e_prime = 16383 + this.exponent;
+        
+        // if e' >= 2^15 - 1, it is automatically considered an infinity
+        if(e_prime >= 32767) {
+          e_prime = 32767;
+          this.mantissa = []; // empty the mantissa
+        }
         console.assert(1 <= e_prime && e_prime <= 32767,
           "exponent does not fit in range");
       } else {
