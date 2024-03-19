@@ -151,7 +151,6 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
 function updateFromNewDecimalString(decimal_string, exponent) {
   // Use when decimal input has been changed.
   // All other values will change accordingly.
-  decimal_val = decimal_string + "e" + exponent;
   if (!numericRegex.test(decimal_string) || !numericRegex.test(exponent)){
     sign_bit = [0];
     var nan = mantissa_exponent_pair(['1'], number_format.INFINITY_E_PRIME);
@@ -160,6 +159,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
     nan.print();
     return nan.pack();
   }
+  decimal_val = decimal_string.trim() + "e" + exponent.trim();
 
   // decimal_val is guaranteed to be not empty due to the regex
   var x = new Decimal(decimal_val);
@@ -463,6 +463,9 @@ function getDecimalBinary(number, limit, skip_leading = false) {
 }
 
 function loadBinaryString(binary_string, exponent) {
+  binary_string = binary_string.trim();
+  exponent = exponent.trim();
+  
   let sign = false;
   let dot_idx = null;
   let first_one_idx = null;
