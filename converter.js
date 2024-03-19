@@ -2,6 +2,28 @@ const Decimal = require("decimal.js");
 Decimal.set({ precision: 150 });
 Decimal.rounding = Decimal.ROUND_DOWN;
 
+const Binary16 = {
+  TOTAL_BITS: 16,
+  EXPONENT_BITS: 5,
+  MANTISSA_BITS: 10,
+  MANTISSA_BITS_WITH_IMPLICIT_1: 11,
+  MIN_NORMALIZED_EXPONENT: -14,
+  E_PRIME_OFFSET: 15,
+  INFINITY_E_PRIME: 31,
+};
+
+const Binary128 = {
+  TOTAL_BITS: 128,
+  EXPONENT_BITS: 15,
+  MANTISSA_BITS: 112,
+  MANTISSA_BITS_WITH_IMPLICIT_1: 113,
+  MIN_NORMALIZED_EXPONENT: -16382,
+  E_PRIME_OFFSET: 16383,
+  INFINITY_E_PRIME: 32767,
+};
+
+var number_format = Binary128;
+
 var shift_forward = -1;
 var binary = [];
 var decimal_val = "15000000000";
@@ -47,13 +69,13 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       // NOTE: RTN-TE might cause it to no longer need denormalization
       //   possible scenario 0.1111...111 x 2^-16382 -> round up to 1.000...000 x 2^-16382
       //   so we determine denormalization later on by `this.mantissa[0] == 0` rather than the exponent
-      if(this.exponent < -16382) {
-        var zeroes_to_add_to_start = -16382 - this.exponent;
+      if(this.exponent < number_format.MIN_NORMALIZED_EXPONENT) {
+        var zeroes_to_add_to_start = number_format.MIN_NORMALIZED_EXPONENT - this.exponent;
         this.mantissa = Array(zeroes_to_add_to_start)
           .fill(0)
           .concat(this.mantissa);
-        this.exponent = -16382;
-      } else if (this.exponent == 32767){
+        this.exponent = number_format.MIN_NORMALIZED_EXPONENT;
+      } else if (this.exponent == number_format.INFINITY_E_PRIME){
         binary_val = sign_bit.join("") + '1111111111111111' + Array(111).fill(0).join("");
         hex_val = convertBinaryStringToHex().join("");
 
@@ -62,9 +84,9 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
             hex: hex_val
         }
       }
-      rtn_te(this, 113);
+      rtn_te(this, number_format.MANTISSA_BITS_WITH_IMPLICIT_1);
       if(this.mantissa.length == 0) {
-        binary_val = sign_bit.join("") + Array(127).fill(0).join("")
+        binary_val = sign_bit.join("") + Array(number_format.TOTAL_BITS - 1).fill(0).join("")
         hex_val = convertBinaryStringToHex().join("");
 
         return {
@@ -76,14 +98,14 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       var e_prime;
       if(this.mantissa[0]) {
         // normal case
-        e_prime = 16383 + this.exponent;
+        e_prime = number_format.E_PRIME_OFFSET + this.exponent;
 
         // if e' >= 2^15 - 1, it is automatically considered an infinity
-        if(e_prime >= 32767) {
-          e_prime = 32767;
+        if(e_prime >= number_format.INFINITY_E_PRIME) {
+          e_prime = number_format.INFINITY_E_PRIME;
           this.mantissa = []; // empty the mantissa
         }
-        console.assert(1 <= e_prime && e_prime <= 32767,
+        console.assert(1 <= e_prime && e_prime <= number_format.INFINITY_E_PRIME,
           "exponent does not fit in range");
       } else {
         // denormalized
@@ -91,20 +113,20 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       }
 
       var exponent_binary = getNumberBinary(new Decimal(e_prime));
-      exponent_bits = Array(15 - exponent_binary.length)
+      exponent_bits = Array(number_format.EXPONENT_BITS - exponent_binary.length)
         .fill(0)
         .concat(exponent_binary);
       console.assert(
-        exponent_bits.length === 15,
-        "exponent bits length: expected 15, got",
+        exponent_bits.length === number_format.EXPONENT_BITS,
+        `exponent bits length: expected ${number_format.EXPONENT_BITS}, got`,
         exponent_bits.length,
       );
       console.log(exponent_bits.join(""));
 
-      mantissa_bits = addZerosToArray(this.mantissa.slice(1), 112);
+      mantissa_bits = addZerosToArray(this.mantissa.slice(1), number_format.MANTISSA_BITS);
       console.assert(
-        mantissa_bits.length === 112,
-        "mantissa bits length: expected 112, got",
+        mantissa_bits.length === number_format.MANTISSA_BITS,
+        `mantissa bits length: expected ${number_format.MANTISSA_BITS}, got`,
         mantissa_bits.length,
       );
       console.log(addSpaces(mantissa_bits.join("")));
@@ -112,8 +134,8 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       binary_val =
         sign_bit.join("") + exponent_bits.join("") + mantissa_bits.join("");
       console.assert(
-        binary_val.length === 128,
-        "binary value length: expected 128, got",
+        binary_val.length === number_format.TOTAL_BITS,
+        `binary value length: expected ${number_format.TOTAL_BITS}, got`,
         binary_val.length,
       );
       console.log(binary_val);
@@ -132,7 +154,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
   decimal_val = decimal_string + "e" + exponent;
   if (!numericRegex.test(decimal_string) || !numericRegex.test(exponent)){
     sign_bit = [0];
-    var nan = mantissa_exponent_pair(['1'],32767);
+    var nan = mantissa_exponent_pair(['1'], number_format.INFINITY_E_PRIME);
     console.log(decimal_string);
     console.log(exponent);
     nan.print();
@@ -511,7 +533,7 @@ function loadBinaryString(binary_string, exponent) {
   }
 
   if (error == true){
-    exponent = 32767;
+    exponent = number_format.INFINITY_E_PRIME;
   }
 
   const num = mantissa_exponent_pair(mantissa, exponent);
