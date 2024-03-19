@@ -12,6 +12,7 @@ var hex_val = "";
 var sign_bit = [];
 var exponent_bits = [];
 var mantissa_bits = [];
+const numericRegex = /^\s*[-+]?[0-9]*\.?[0-9]+\s*$/;
 
 // TODO: rtn_te is inplace
 
@@ -52,6 +53,14 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
           .fill(0)
           .concat(this.mantissa);
         this.exponent = -16382;
+      } else if (this.exponent == 32767){
+        binary_val = sign_bit.join("") + '1111111111111111' + Array(111).fill(0).join("");
+        hex_val = convertBinaryStringToHex().join("");
+
+        return {
+            bin: binary_val,
+            hex: hex_val
+        }
       }
       rtn_te(this, 113);
       if(this.mantissa.length == 0) {
@@ -68,7 +77,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       if(this.mantissa[0]) {
         // normal case
         e_prime = 16383 + this.exponent;
-        
+
         // if e' >= 2^15 - 1, it is automatically considered an infinity
         if(e_prime >= 32767) {
           e_prime = 32767;
@@ -80,7 +89,7 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
         // denormalized
         e_prime = 0;
       }
-      
+
       var exponent_binary = getNumberBinary(new Decimal(e_prime));
       exponent_bits = Array(15 - exponent_binary.length)
         .fill(0)
@@ -121,6 +130,14 @@ function updateFromNewDecimalString(decimal_string, exponent) {
   // Use when decimal input has been changed.
   // All other values will change accordingly.
   decimal_val = decimal_string + "e" + exponent;
+  if (!numericRegex.test(decimal_string) || !numericRegex.test(exponent)){
+    sign_bit = [0];
+    var nan = mantissa_exponent_pair(['1'],32767);
+    console.log(decimal_string);
+    console.log(exponent);
+    nan.print();
+    return nan.pack();
+  }
   var x = new Decimal(decimal_val);
   if (x.greaterThanOrEqualTo(0)) {
     sign_bit = [0];
@@ -143,7 +160,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
       // 1xx.xxxxx -> we have to turn it into 1.xxxxxxx
       //   this can be determined from the number of bits in the integer part
       ? integer_part.length -
-          1 
+          1
       // 0.0*01xx -> turn into 0.1xx using number of removed zeroes in fractional part
       //   additional 1 to turn 0.1xx into 1.xx */
       : -(removed_zeros + 1) ,
@@ -423,6 +440,7 @@ function loadBinaryString(binary_string, exponent) {
   let sign = false;
   let dot_idx = null;
   let first_one_idx = null;
+  let error = false;
   const mantissa = [];
   for (let i = 0; i < binary_string.length; i++) {
     const char = binary_string[i];
@@ -442,13 +460,20 @@ function loadBinaryString(binary_string, exponent) {
           dot_idx = i;
         } else {
           // error
+          error = true;
         }
+        break;
       case "-":
         if (i == 0) {
           sign = true;
         } else {
-          // error
+          error = true;
         }
+        break;
+      default:
+          error = true;
+          break;
+
     }
 
     // push to mantissa if implicit 1 already found
@@ -457,31 +482,44 @@ function loadBinaryString(binary_string, exponent) {
     }
   }
 
+
+
   // determine sign
   sign_bit[0] = sign ? 1 : 0
 
+  if (!numericRegex.test(exponent)){
+    error = true;
+  }
+  if (error == false) {
   // determine exponent
-  exponent = parseInt(exponent);
-  if (dot_idx != null) {
-    //
-    if (first_one_idx < dot_idx) {
-      // has dot
-      // move towards 1, but not so they would end up switching positions
-      exponent += dot_idx - first_one_idx - 1;
+    exponent = parseInt(exponent);
+    if (dot_idx != null) {
+        //
+        if (first_one_idx < dot_idx) {
+        // has dot
+        // move towards 1, but not so they would end up switching positions
+        exponent += dot_idx - first_one_idx - 1;
+        } else {
+        // 000.xx1xxxx
+        // move towards 1, and make them switch positions
+        exponent += dot_idx - first_one_idx;
+        }
     } else {
-      // 000.xx1xxxx
-      // move towards 1, and make them switch positions
-      exponent += dot_idx - first_one_idx;
+        // no dot
+        exponent += mantissa.length - 1;
     }
-  } else {
-    // no dot
-    exponent += mantissa.length - 1;
+  }
+
+  if (error == true){
+    exponent = 32767;
   }
 
   const num = mantissa_exponent_pair(mantissa, exponent);
   num.print();
   return num.pack();
 }
+
+loadBinaryString('B', 'B')
 
 window.loadBinaryString = loadBinaryString;
 window.loadDecimalString = updateFromNewDecimalString;
