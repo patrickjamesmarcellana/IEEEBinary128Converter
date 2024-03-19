@@ -103,7 +103,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
   var number_binary = getNumberBinary(x);
   var number_bits_currently_used = number_binary.length;
 
-  var [decimal_binary, exponent, remaining] = getDecimalBinary(
+  var [decimal_binary, removed_zeros, remaining] = getDecimalBinary(
     x,
     113 - number_bits_currently_used,
     x.lessThan(1) /* if 0.xxx, then remove leading zeros in decimal part */,
@@ -116,7 +116,7 @@ function updateFromNewDecimalString(decimal_string, exponent) {
     number_bits_currently_used > 0
       ? number_bits_currently_used -
           1 /* 1xx.xxxxx -> base on number_bits_currently_used */
-      : exponent /* 0.xxxxx -> base on getDecimalBinary */,
+      : -(removed_zeros + 1) /* 0.xxxxx -> removed zeros enabled, add 1 to turn 0.1xxx into 1.xxx */,
   );
   console.log(number);
 
@@ -364,7 +364,7 @@ function getDecimalBinary(number, limit, skip_leading = false) {
   var decimal_portion = number.minus(number.round());
   var binary_bits = [];
   var zero_trigger = true;
-  var exponent = 0;
+  var removed_zeros = 0;
 
   while (binary_bits.length < limit && !decimal_portion.equals(0)) {
     decimal_portion = decimal_portion.mul(2);
@@ -377,11 +377,11 @@ function getDecimalBinary(number, limit, skip_leading = false) {
       if (!skip_leading || !zero_trigger /* if skip leading enabled */) {
         binary_bits.push(0);
       } else {
-        exponent--; // decrease exponent to compensate for place value increase
+        removed_zeros++;
       }
     }
   }
-  return [binary_bits, exponent, decimal_portion];
+  return [binary_bits, removed_zeros, decimal_portion];
 }
 
 function loadBinaryString(binary_string, exponent) {
