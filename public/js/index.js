@@ -1,35 +1,18 @@
 // records values so they are not lost when switching base/radix
-var binaryNumberString = "";
-var binaryExponentString = "";
-var decimalNumberString = "";
-var decimalExponentString = "";
-
-// 2 stands for binary mantissa input,
-// 10 stands for decimal mantissa input
-var MODE = 2;
-
-// stores the values of the number and exponent text fields
-var NUMBER = 0;
-var EXPONENT = 0;
+let binaryNumberString = "";
+let binaryExponentString = "";
+let decimalNumberString = "";
+let decimalExponentString = "";
 
 $("#submit-btn").click((e) => {
-    if ($("#binary-input").hasClass("active")) {
-        MODE = 2;
-    } else {
-        MODE = 10;
-    }
-
-    NUMBER = $("#number-value").val();
-    EXPONENT = $("#exponent-value").val();
+    let numberValue = $("#number-value").val();
+    let exponentValue = $("#exponent-value").val();
 
     let result;
-    switch (MODE) {
-        case 2:
-            result = window.loadBinaryString(NUMBER, EXPONENT);
-            break;
-        case 10:
-            result = window.loadDecimalString(NUMBER, EXPONENT);
-            break;
+    if ($("#binary-input").hasClass("active")) {
+        result = window.loadBinaryString(numberValue, exponentValue);
+    } else {
+        result = window.loadDecimalString(numberValue, exponentValue);
     }
     $("#output-bin").text(result.bin);
     $("#output-hex").text(result.hex);
@@ -78,7 +61,4 @@ $("#binary-input").click((e) => {
 $("#clear-btn").click((e) => {
     $("#number-value").val("");
     $("#exponent-value").val("");
-    console.log(MODE);
-    console.log(NUMBER);
-    console.log(EXPONENT);
 });
