@@ -33,7 +33,13 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
     mantissa: _mantissa,
     exponent: _exponent,
     print: function () {
-      console.log(this.mantissa, "x 2^", this.exponent);
+      if(this.mantissa.length > 0) {
+        const first_bit = this.mantissa[0];
+        const other_bits = this.mantissa.slice(1)
+        console.log(`${first_bit}.${other_bits.join("")} x 2^${this.exponent}`);
+      } else {
+        console.log(`0 x 2^${this.exponent}`);
+      }
     },
     pack: function () {
       rtn_te(this, 113);
@@ -360,7 +366,7 @@ function getDecimalBinary(number, limit, skip_leading = false) {
   var zero_trigger = true;
   var exponent = 0;
 
-  while (binary_bits.length <= limit && !decimal_portion.equals(0)) {
+  while (binary_bits.length < limit && !decimal_portion.equals(0)) {
     decimal_portion = decimal_portion.mul(2);
     if (decimal_portion.greaterThanOrEqualTo(1)) {
       decimal_portion = decimal_portion.minus(1);
