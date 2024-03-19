@@ -33,7 +33,13 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
     mantissa: _mantissa,
     exponent: _exponent,
     print: function () {
-      console.log(this.mantissa, "x 2^", this.exponent);
+      if(this.mantissa.length > 0) {
+        const first_bit = this.mantissa[0];
+        const other_bits = this.mantissa.slice(1)
+        console.log(`${first_bit}.${other_bits.join("")} x 2^${this.exponent}`);
+      } else {
+        console.log(`0 x 2^${this.exponent}`);
+      }
     },
     pack: function () {
       rtn_te(this, 113);
