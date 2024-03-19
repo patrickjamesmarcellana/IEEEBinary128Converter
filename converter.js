@@ -100,23 +100,25 @@ function updateFromNewDecimalString(decimal_string, exponent) {
     sign_bit = [1];
     x = x.negated();
   }
-  var number_binary = getNumberBinary(x);
-  var number_bits_currently_used = number_binary.length;
+  var integer_part = getNumberBinary(x);
 
-  var [decimal_binary, removed_zeros, remaining] = getDecimalBinary(
+  var [fractional_part, removed_zeros, remaining] = getDecimalBinary(
     x,
-    113 - number_bits_currently_used,
+    113 - integer_part.length,
     x.lessThan(1) /* if 0.xxx, then remove leading zeros in decimal part */,
   );
 
   var ZERO_POINT_FIVE = new Decimal("0.5");
-  console.log(number_binary, "enc");
   var number = mantissa_exponent_pair(
-    number_binary.concat(decimal_binary),
-    number_bits_currently_used > 0
-      ? number_bits_currently_used -
-          1 /* 1xx.xxxxx -> base on number_bits_currently_used */
-      : -(removed_zeros + 1) /* 0.xxxxx -> removed zeros enabled, add 1 to turn 0.1xxx into 1.xxx */,
+    integer_part.concat(fractional_part),
+    integer_part.length > 0
+      // 1xx.xxxxx -> we have to turn it into 1.xxxxxxx
+      //   this can be determined from the number of bits in the integer part
+      ? integer_part.length -
+          1 
+      // 0.0*01xx -> turn into 0.1xx using number of removed zeroes in fractional part
+      //   additional 1 to turn 0.1xx into 1.xx */
+      : -(removed_zeros + 1) ,
   );
   console.log(number);
 
