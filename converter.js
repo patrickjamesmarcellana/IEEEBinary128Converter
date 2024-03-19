@@ -344,6 +344,8 @@ function rtn_te(mantissa_exponent_pair, desired_length) {
     // remove trailing zeros
     removeTrailingZeroesFromArray(mantissa)
 
+    console.log(mantissa, desired_length)
+
     if (mantissa.length <= desired_length) {
       // done
       console.log("RTN-TE truncate");
@@ -352,7 +354,7 @@ function rtn_te(mantissa_exponent_pair, desired_length) {
       console.log("RTN-TE tie");
       // tie, round to even
       mantissa.pop();
-      if (mantissa[-1] == 1) {
+      if (mantissa.at(-1) == 1) {
         // if odd, round up
         round_up();
       }
@@ -397,7 +399,7 @@ function addZerosToArray(arr, desiredLength) {
 }
 
 function removeTrailingZeroesFromArray(arr) {
-  while (arr.length > 0 && arr[-1] == 0) {
+  while (arr.length > 0 && arr.at(-1) == 0) {
     arr.pop();
   }
   return arr
