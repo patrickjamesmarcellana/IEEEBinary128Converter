@@ -1,13 +1,19 @@
 import { loadDecimalString, loadBinaryString } from "../../converter.js";
+
 // records values so they are not lost when switching base/radix
 let binaryNumberString = "";
 let binaryExponentString = "";
 let decimalNumberString = "";
 let decimalExponentString = "";
 
-$("#submit-btn").click((e) => {
-    $(".result-value").removeClass("invisible");
+let signBitOutput = "";
+let exponentOutput = "";
+let significandOutput = "";
+let hexOutput = "";
 
+let outputFile = null;
+
+$("#submit-btn").click((e) => {
     const numberValue = $("#number-value").val();
     const exponentValue = $("#exponent-value").val();
 
@@ -25,10 +31,20 @@ $("#submit-btn").click((e) => {
         .match(/.{1,4}/g)
         .join(" ");
 
-    $("#sign-bit").text(first16BitsGrouped[0]);
-    $("#exponent-bits").text(first16BitsGrouped.substring(1));
-    $("#significand-bits").text(significandBitsGrouped);
-    $("#output-hex").text("0x" + result.hex);
+    signBitOutput = first16BitsGrouped[0];
+    exponentOutput = first16BitsGrouped.substring(1);
+    significandOutput = significandBitsGrouped;
+    hexOutput = "0x" + result.hex;
+
+    $("#sign-bit").text(signBitOutput);
+    $("#exponent-bits").text(exponentOutput);
+    $("#significand-bits").text(significandOutput);
+    $("#output-hex").text(hexOutput);
+
+    createOutputFile();
+
+    $(".result-value").removeClass("invisible");
+    $("#download-btn").removeClass("invisible");
 });
 
 $("#decimal-input").click((e) => {
@@ -75,3 +91,24 @@ $("#clear-btn").click((e) => {
     $("#number-value").val("");
     $("#exponent-value").val("");
 });
+
+function createOutputFile() {
+    // prevent memory leaks by releasing previous object URL
+    if (outputFile !== null) {
+        window.URL.revokeObjectURL(outputFile);
+    }
+
+    const text =
+        "Result\r\n\r\n" +
+        "Binary Representation\r\n" +
+        `Sign bit: ${signBitOutput}\r\n` +
+        `Exponent: ${exponentOutput}\r\n` +
+        `Significand: ${significandOutput}\r\n\r\n` +
+        "Hexadecimal Representation\r\n" +
+        `${hexOutput}\r\n`;
+
+    const blob = new Blob([text], { type: "text/plain" });
+    outputFile = window.URL.createObjectURL(blob);
+    $("#download-btn").attr("download", "output.txt");
+    $("#download-btn").attr("href", outputFile);
+}
