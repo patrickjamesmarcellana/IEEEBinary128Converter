@@ -1,5 +1,8 @@
 # IEEE-754 Binary-128 Floating-Point Converter
 
+## 5-Minute Demo Video
+https://github.com/lordpinpin/Binary128Converter/assets/113344400/bbafd880-ebaf-429a-a3a9-8e2dc46ae666
+
 ## Overview
 
 The application is a web-based calculator for converting numbers in binary and decimal format to its binary128 or [quadruple precision floating-point](https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format) representation as defined in IEEE 754. The web application serves as the simulation project for the CSARCH2 course of A.Y. 2023-2024 at De La Salle University.
