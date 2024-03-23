@@ -43,8 +43,8 @@ $("#submit-btn").click((e) => {
 
     createOutputFile();
 
-    $(".result-value").removeClass("invisible");
-    $("#download-btn").removeClass("invisible");
+    $(".results-value").removeClass("hidden");
+    $("#download-btn").removeClass("hidden");
 });
 
 $("#decimal-input").click((e) => {
