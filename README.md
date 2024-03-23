@@ -16,7 +16,7 @@ The project demo video shows the compilation of the program and demonstrates pos
 
 # Output Deliverables
 
-All the output deliverables including the screenshots of the program with different input values for test cases can be found in the output directory.
+All the output deliverables including the screenshots of the program with different input values for test cases and the analysis writeup can be found in the `output` directory.
 
 ## Dependencies
 
