@@ -12,7 +12,11 @@ Other deliverables such as the analysis writeup and screenshots of test cases ca
 
 https://github.com/lordpinpin/Binary128Converter/assets/113344400/bbafd880-ebaf-429a-a3a9-8e2dc46ae666
 
-Alternatively, the project demo video can be viewed on [YouTube](https://www.youtube.com/watch?v=QbLP0B4on_g).
+The project demo video shows the compilation of the program and demonstrates possible test cases and scenarios using different input values. Alternatively, the project demo video can be viewed on [YouTube](https://www.youtube.com/watch?v=QbLP0B4on_g).
+
+# Output Deliverables
+
+All the output deliverables including the screenshots of the program with different input values for test cases can be found in the output directory.
 
 ## Dependencies
 
