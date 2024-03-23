@@ -6,6 +6,8 @@ The application is a web-based calculator for converting numbers in binary and d
 
 The input value must be represented in floating-point notation. The calculator requires a significand/mantissa in either decimal or binary, along with the exponent in the power term. The output is displayed in binary (sign bit, exponent, and significand) and hexadecimal representations, which can optionally be exported to a plaintext file. The calculator supports normal, denormalized, zero, (positive and negative) infinity, and NaN (indeterminate) values.
 
+Other outputs required can be found within the outputs folder.
+
 ## Dependencies
 
 The web application was mainly written in HTML with [Tailwind CSS](https://tailwindcss.com/) for styling, and JavaScript and [jQuery](https://jquery.com/) for DOM manipulation. It uses [Node.js](https://nodejs.org/) for the web server.
