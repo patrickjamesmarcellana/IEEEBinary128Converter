@@ -6,8 +6,6 @@ The application is a web-based calculator for converting numbers in binary and d
 
 The input value must be represented in floating-point notation. The calculator requires a significand/mantissa in either decimal or binary, along with the exponent in the power term. The output is displayed in binary (sign bit, exponent, and significand) and hexadecimal representations, which can optionally be exported to a plaintext file. The calculator supports normal, denormalized, zero, (positive and negative) infinity, and NaN (indeterminate) values.
 
-Other deliverables such as the analysis writeup and screenshots of test cases can be found within the `output` folder.
-
 ## Project Demo
 
 https://github.com/lordpinpin/Binary128Converter/assets/113344400/bbafd880-ebaf-429a-a3a9-8e2dc46ae666
@@ -16,7 +14,7 @@ The project demo video shows the compilation of the program and demonstrates pos
 
 # Output Deliverables
 
-All the output deliverables including the screenshots of the program with different input values for test cases and the analysis writeup can be found in the `output` directory.
+All the output deliverables including the downloadable demo video, the screenshots of the program with different input values for test cases, and the analysis writeup can be found in the `output` directory.
 
 ## Dependencies
 
