@@ -26,7 +26,7 @@ The following is a list of Node.js packages that the project uses.
 
 ### Live Instance
 
-A deployed instance of the web application is hosted and accessible at [example](https://example.com).
+A deployed instance of the web application hosted using Render is accessible [here](https://ieeebinary128converter.onrender.com/). A backup instance hosted with Fly can also be used [here](https://converter-appp.fly.dev/).
 
 ### Local Instance
 
