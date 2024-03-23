@@ -495,6 +495,9 @@ function loadBinaryString(binary_string, exponent) {
   let first_one_idx = null;
   let error = false;
   const mantissa = [];
+  if (binary_string.length == 0) {
+    error = true;
+  }
   for (let i = 0; i < binary_string.length; i++) {
     const char = binary_string[i];
 
