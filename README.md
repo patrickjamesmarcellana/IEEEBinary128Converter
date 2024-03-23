@@ -12,12 +12,15 @@ The web application was mainly written in HTML with [Tailwind CSS](https://tailw
 
 The following is a list of Node.js packages that the project uses.
 
-| Dependency                                             | Purpose                                                                                                                   |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| [express](https://www.npmjs.com/package/express)       | Node.js web application framework the application was written with.                                                       |
-| [dotenv](https://www.npmjs.com/package/dotenv)         | Loading custom environment variables in local instances.                                                                  |
-| [decimal.js](https://www.npmjs.com/package/decimal.js) | Accurately representing the input value as a floating-point. Used in the conversion script for floating-point operations. |
-| [browserify](https://www.npmjs.com/package/browserify) | Loading the conversion script client-side.                                                                                |
+| Dependency                                                       | Purpose                                                                                                           |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [express](https://www.npmjs.com/package/express)                 | Node.js web application framework the application was written with.                                               |
+| [dotenv](https://www.npmjs.com/package/dotenv)                   | Loading custom environment variables in local instances.                                                          |
+| [decimal.js](https://www.npmjs.com/package/decimal.js)           | Accurately represents the input as a floating-point. Used in the conversion script for floating-point operations. |
+| [browserify](https://www.npmjs.com/package/browserify)           | Loading the conversion script client-side.                                                                        |
+| [esmify](https://www.npmjs.com/package/esmify)                   | Used with browserify in loading the conversion script client-side.                                                |
+| [watchify](https://www.npmjs.com/package/esmify)                 | Used with browserify in loading the conversion script client-side.                                                |
+| [path-browserify](https://www.npmjs.com/package/path-browserify) | Used with browserify in loading the conversion script client-side.                                                |
 
 ## Installation
 
