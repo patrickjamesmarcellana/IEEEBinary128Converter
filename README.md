@@ -2,9 +2,19 @@
 
 ## Overview
 
-The application is a web-based calculator for converting numbers in binary and decimal format to its binary128 or [quadruple precision floating-point](https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format) representation as defined in IEEE 754. The web application serves as the simulation project for the CSARCH2 course of A.Y. 2023-2024 at De La Salle University.
+The application is a web-based calculator for converting numbers in binary and decimal format to its binary128 or [quadruple precision floating-point](https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format) representation as defined in IEEE 754. The web application serves as the simulation project for the CSARCH2 course of A.Y. 2023-2024 at De La Salle University. The app is deployed in this [Website](https://ieeebinary128converter.onrender.com/).
 
 The input value must be represented in floating-point notation. The calculator requires a significand/mantissa in either decimal or binary, along with the exponent in the power term. The output is displayed in binary (sign bit, exponent, and significand) and hexadecimal representations, which can optionally be exported to a plaintext file. The calculator supports normal, denormalized, zero, (positive and negative) infinity, and NaN (indeterminate) values.
+
+## Project Demo
+
+https://github.com/lordpinpin/Binary128Converter/assets/113344400/bbafd880-ebaf-429a-a3a9-8e2dc46ae666
+
+The project demo video shows the compilation of the program and demonstrates possible test cases and scenarios using different input values. Alternatively, the project demo video can be viewed on [YouTube](https://www.youtube.com/watch?v=QbLP0B4on_g).
+
+# Output Deliverables
+
+All the output deliverables including the downloadable demo video, the screenshots of the program with different input values for test cases, and the analysis writeup can be found in the `output` directory.
 
 ## Dependencies
 
@@ -26,7 +36,7 @@ The following is a list of Node.js packages that the project uses.
 
 ### Live Instance
 
-A deployed instance of the web application is hosted and accessible at [example](https://example.com).
+A deployed instance of the web application hosted using Render is accessible [here](https://ieeebinary128converter.onrender.com/). A backup instance hosted with Fly can also be used [here](https://converter-appp.fly.dev/).
 
 ### Local Instance
 

@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-Decimal.set({ precision: 150 });
+Decimal.set({ precision: 1e9 });
 Decimal.rounding = Decimal.ROUND_DOWN;
 
 const Binary16 = {
