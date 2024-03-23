@@ -71,6 +71,13 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
       // NOTE: RTN-TE might cause it to no longer need denormalization
       //   possible scenario 0.1111...111 x 2^-16382 -> round up to 1.000...000 x 2^-16382
       //   so we determine denormalization later on by `this.mantissa[0] == 0` rather than the exponent
+      var zero = false;
+      console.log(this.mantissa);
+      if(this.mantissa.includes('1') || this.mantissa.includes(1)){
+        zero = false;
+      } else {
+        zero = true;
+      }
       if(this.exponent < number_format.MIN_NORMALIZED_EXPONENT) {
         var zeroes_to_add_to_start = number_format.MIN_NORMALIZED_EXPONENT - this.exponent;
         this.mantissa = Array(zeroes_to_add_to_start)
@@ -81,15 +88,27 @@ function mantissa_exponent_pair(_mantissa, _exponent) {
         binary_val = sign_bit.join("") + '1111111111111111' + Array(111).fill(0).join("");
         hex_val = convertBinaryStringToHex().join("");
 
+
+
         return {
             bin: binary_val,
             hex: hex_val
         }
       }
+
+
       rtn_te(this, number_format.MANTISSA_BITS_WITH_IMPLICIT_1);
+
       if(this.mantissa.length == 0) {
         binary_val = sign_bit.join("") + Array(number_format.TOTAL_BITS - 1).fill(0).join("")
         hex_val = convertBinaryStringToHex().join("");
+
+        if(!zero && this.exponent <= -16382){
+          binary_val = sign_bit.join("") + Array(number_format.TOTAL_BITS - 2).fill(0).join("") + "1"
+          hex_val = convertBinaryStringToHex().join("");
+          console.log(binary_val);
+          console.log(hex_val);
+        }
 
         return {
             bin: binary_val,
@@ -161,11 +180,13 @@ function updateFromNewDecimalString(decimal_string, exponent) {
     nan.print();
     return nan.pack();
   }
+  var exponent_val = new Decimal(exponent.trim());
+
   decimal_val = decimal_string.trim() + "e" + exponent.trim();
 
   // decimal_val is guaranteed to be not empty due to the regex
   var x = new Decimal(decimal_val);
-  if (decimal_val[0] !== '-') { 
+  if (decimal_val[0] !== '-') {
     sign_bit = [0];
   } else {
     sign_bit = [1];
@@ -565,7 +586,7 @@ const toBinary16 = function() {
   number_format = Binary16;
 }
 export {
-  loadBinaryString, 
+  loadBinaryString,
   updateFromNewDecimalString as loadDecimalString,
   toBinary16
 }
