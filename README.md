@@ -12,7 +12,6 @@ The web application was mainly written in HTML with [Tailwind CSS](https://tailw
 
 The following is a list of Node.js packages that the project uses.
 
-The following is a list of libraries and packages that the project utilizes for its operation.
 | Dependency                                             | Purpose                                                                                                                   |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | [express](https://www.npmjs.com/package/express)       | Node.js web application framework the application was written with.                                                       |
