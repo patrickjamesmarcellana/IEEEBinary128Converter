@@ -12,6 +12,8 @@ Other deliverables such as the analysis writeup and screenshots of test cases ca
 
 https://github.com/lordpinpin/Binary128Converter/assets/113344400/bbafd880-ebaf-429a-a3a9-8e2dc46ae666
 
+Alternatively, the project demo video can be viewed on [YouTube](https://www.youtube.com/watch?v=QbLP0B4on_g).
+
 ## Dependencies
 
 The web application was mainly written in HTML with [Tailwind CSS](https://tailwindcss.com/) for styling, and JavaScript and [jQuery](https://jquery.com/) for DOM manipulation. It uses [Node.js](https://nodejs.org/) for the web server.
