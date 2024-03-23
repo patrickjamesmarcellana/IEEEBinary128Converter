@@ -19,7 +19,7 @@ The following is a list of Node.js packages that the project uses.
 | [decimal.js](https://www.npmjs.com/package/decimal.js)           | Accurately represents the input as a floating-point. Used in the conversion script for floating-point operations. |
 | [browserify](https://www.npmjs.com/package/browserify)           | Loading the conversion script client-side.                                                                        |
 | [esmify](https://www.npmjs.com/package/esmify)                   | Used with browserify in loading the conversion script client-side.                                                |
-| [watchify](https://www.npmjs.com/package/esmify)                 | Used with browserify in loading the conversion script client-side.                                                |
+| [watchify](https://www.npmjs.com/package/watchify)               | Used with browserify in loading the conversion script client-side.                                                |
 | [path-browserify](https://www.npmjs.com/package/path-browserify) | Used with browserify in loading the conversion script client-side.                                                |
 
 ## Installation
